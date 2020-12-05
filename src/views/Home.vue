@@ -1,5 +1,10 @@
 <template>
     <b-container>
+      <div v-if="votes">
+        <ul v-for="v in votes" :key="v.id">
+          <li>{{v.name}} ({{v.id}})</li>
+        </ul>
+      </div>
       <b-card
         title="Neue Abstimmung"
         img-src="https://picsum.photos/600/300/?image=25"
@@ -19,19 +24,27 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
+import { Component, Vue, Model } from 'vue-property-decorator';
+import VoteService from '@/domain/api/vote.service'
+import { Vote } from '@/domain/models/vote';
 
 @Component({
   components: {
   },
 })
 export default class Home extends Vue {
-  private abstimmung: string = ''
+  @Model() private votes: Vote[] | undefined;
+  private abstimmung: string = '';
 
-  onStartVote() {
-    console.log('VOTE', this.abstimmung);
-    this.$router.push({ name: 'Vote', params: { voteId: "1" } })
+  async created() {
+    this.votes = await VoteService.getVotes();
+  }
+
+  async onStartVote() {
+    const newVote: Vote | undefined = await VoteService.createVote(this.abstimmung);
+    if (newVote) {
+      this.$router.push({ name: 'Vote', params: { voteId: newVote.id.toString() } })
+    }
   }
 }
 </script>

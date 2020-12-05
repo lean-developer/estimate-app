@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
 import Home from '../views/Home.vue'
-import Vote from '../views/Vote.vue'
+import VoteComp from '@/components/VoteComp.vue'
 
 Vue.use(VueRouter)
 
@@ -14,7 +14,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/vote/:voteId',
     name: 'Vote',
-    component: Vote
+    component: VoteComp
   },
   {
     path: '/about',
